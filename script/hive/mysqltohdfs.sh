@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # if [ -f "./JobName" ]; then
 #     echo " JobName 文件不存在"

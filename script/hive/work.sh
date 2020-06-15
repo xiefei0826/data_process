@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ./mysqltohivetable.sh DataCentre xf xiefei 'jdbc:mysql://tdb:3306/DataCentre?characterEncoding%3dutf8mb4' 'hdfs://ld1:8020'
 ./mysqltohivetable.sh BaseData xf xiefei 'jdbc:mysql://tdb:3306/BaseData?characterEncoding%3dutf8mb4' 'hdfs://ld1:8020'

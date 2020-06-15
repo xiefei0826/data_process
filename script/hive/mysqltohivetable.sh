@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # select   TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA='DataCentre';
 # select table_name from information_schema.tables  where table_schema='datacentre';
