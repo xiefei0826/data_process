@@ -1,0 +1,7 @@
+1、创建mysql结构到hive
+2、在hdfs中创建对就 的目录
+3、修改hive表的对应目录
+ALTER TABLE cacheitem SET LOCATION 'hdfs://ld1:8020/user/hive/cacheitem';
+4、转换hive表为外部表
+ALTER TABLE cacheitem SET TBLPROPERTIES ('EXTERNAL'='TRUE');
+5、将数据导入hdfs
