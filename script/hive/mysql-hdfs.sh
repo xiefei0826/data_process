@@ -34,10 +34,10 @@ username=$3
 passwordfile=$4
 connect=$5
 
-# while true; do
+
+while true; do
 # shellcheck disable=SC2068
 for tableName in ${tableNames[@]}; do
-
     typeset -l tmpTableName
     tmpTableName=$tableName
     typeset -l tmpDataBase
@@ -49,19 +49,19 @@ for tableName in ${tableNames[@]}; do
         #不存在任务，则创建任务
         echo "start create sqoop job $Databases"."$tableName"
         cmd=" sqoop-job --create $tmpDataBase"."$tmpTableName
-        -- import \n
-        --connect  $connect \n
-        --table $tableName  \n
-        --password-file $passwordfile \n
-        --username $username  \n
-        --split-by Id \n
-        --merge-key Id  \n
-        --fetch-size 100  \n
-        --check-column UpdateTime \n
-        --incremental lastmodified \n
-        --target-dir  '/datacentre/$tmpDataBase/$tmpTableName' \n
-        --fields-terminated-by '\0001' \n
-        --lines-terminated-by '\n' \n
+        -- import \
+        --connect  $connect \
+        --table $tableName  \
+        --password-file $passwordfile \
+        --username $username  \
+        --split-by Id \
+        --merge-key Id  \
+        --fetch-size 100  \
+        --check-column UpdateTime \
+        --incremental lastmodified \
+        --target-dir  '/datacentre/$tmpDataBase/$tmpTableName' \
+        --fields-terminated-by '\0001' \
+        --lines-terminated-by '\n' \
         --last-value '1970-01-01 00:00:01.0'"
 
         eval $cmd >$tableName"init.log" 2>&1
@@ -74,9 +74,12 @@ for tableName in ${tableNames[@]}; do
     # run job
     echo "start run sqoop job $tableName"
     cmd=" sqoop-job --exec $tmpDataBase"."$tmpTableName"
-    eval $cmd >$tableName"job.log" 2>&1 &
+    eval $cmd >$tableName"job.log" 2>&1
     echo "end run sqoop job $tableName"
 
+done
+
+sleep 300000
 done
 
 echo "end"

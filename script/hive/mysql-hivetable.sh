@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-# select   TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA='DataCentre';
-# select table_name from information_schema.tables  where table_schema='datacentre';
 work_path=$(dirname $(readlink -f $0))
-# hive -e "select table_name from information_schema.tables  where table_schema='datacentre';" >datacentrehive.table 2>/dev/null
 
 Databases=$1
 username=$2
@@ -54,13 +51,13 @@ for mysqlTable in ${mysqlTableNames[@]}; do
     # shellcheck disable=SC2199
     # shellcheck disable=SC2076
     if [[ ! " ${hiveTableNames[@]} " =~ " ${tmpTableName} " ]]; then
-        cmd="sqoop-create-hive-table  \n
-        --connect $connect \n
-        --username $username \n
-        --password $password \n
-        --table $mysqlTable \n
-        --hive-database  $tmpDatabase  \n
-        --fields-terminated-by '\0001'  \n
+        cmd="sqoop-create-hive-table  \
+        --connect $connect \
+        --username $username \
+        --password $password \
+        --table $mysqlTable \
+        --hive-database  $tmpDatabase  \
+        --fields-terminated-by '\0001'  \
         --lines-terminated-by '\n'"
 
         echo " start create hive table $tmpDatabase.$tmpTableName"
