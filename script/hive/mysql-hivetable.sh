@@ -3,35 +3,19 @@
 work_path=$(dirname $(readlink -f $0))
 
 Databases=$1
-username=$2
-password=$3
-connect=$4
-hdfsaddress=$5
+mysqlTableNames=($(echo $2 | tr "," "\n"))
+username=$3
+passwordfile=$4
+connect=$5
+hdfsaddress=$6
 
 typeset -l tmpDatabase
-tmpDatabase=$Databases
+tmpDatabase=${Databases}
 
 hive -e "  create database if not exists  $tmpDatabase "
 
-cmd=" mysql -u $username -p$password -h tdb -e \"select   TABLE_NAME from information_schema.TABLES where TABLE_SCHEMA='$Databases';\""
-eval $cmd >$tmpDatabase"mysql.table"
-# mysql table name array
-mysqlTableNames=()
-tableNum=0
-isTableName=0
-while read line; do
-
-    if [[ $isTableName -gt 0 ]] && [[ ${#line} -gt 0 ]]; then
-        mysqlTableNames[$((tableNum))]=$line
-        tableNum=$tableNum+1
-    fi
-
-    isTableName=$isTableName+1
-
-done <$tmpDatabase"mysql.table"
-
 cmd="hive -e \"select table_name from information_schema.tables  where table_schema='$tmpDatabase'  ;\""
-eval $cmd >$tmpDatabase"hive.table"
+eval $cmd >$tmpDatabase"hive.table" 2>/dev/null
 hiveTableNames=()
 tableNum=0
 isTableName=0
@@ -44,6 +28,8 @@ while read line; do
     isTableName=$isTableName+1
 done <$tmpDatabase"hive.table"
 
+rm -f ./${tmpDatabase}"hive.table"
+
 # shellcheck disable=SC2068
 for mysqlTable in ${mysqlTableNames[@]}; do
     typeset -l tmpTableName
@@ -54,21 +40,17 @@ for mysqlTable in ${mysqlTableNames[@]}; do
         cmd="sqoop-create-hive-table  \
         --connect $connect \
         --username $username \
-        --password $password \
+        --password-file $passwordfile \
         --table $mysqlTable \
         --hive-database  $tmpDatabase  \
         --fields-terminated-by '\0001'  \
         --lines-terminated-by '\n'"
 
-        echo " start create hive table $tmpDatabase.$tmpTableName"
-        eval $cmd >/dev/null 2>&1
-        hive -e "ALTER TABLE $tmpDatabase.$tmpTableName SET LOCATION '$hdfsaddress/datacentre/$tmpDatabase/$tmpTableName';" >/dev/null 2>&1
-        # hive -e "ALTER TABLE $tmpDatabase.$tmpTableName SET TBLPROPERTIES ('EXTERNAL'='TRUE');" >/dev/null
-        echo " end create hive table $tmpDatabase.$tmpTableName"
+        echo " start create hive table $tmpDatabase.$tmpTableName" >>createhvietable.log
+        eval ${cmd} >>createhvietable.log 2>/dev/null
+        hive -e "ALTER TABLE $tmpDatjpabase.$tmpTableName SET LOCATION '$hdfsaddress/datacentre/$tmpDatabase/$tmpTableName';" >>createhvietable.log 2>/dev/null
+
+        echo " end create hive table $tmpDatabase.$tmpTableName" >>createhvietable.log
 
     fi
-
-    # hive -e "drop table $tmpDatabase.$tmpTableName "
 done
-
-echo "end"

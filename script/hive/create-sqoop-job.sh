@@ -5,8 +5,7 @@
 # else
 #     rm -rf ./JobName
 # fi
-
-sqoop-job --list >jobName 2>&1
+sqoop-job --list >jobName 2>/dev/null
 
 availableJob="Available jobs:"
 
@@ -25,7 +24,7 @@ while read line; do
     fi
 
 done <jobName
-
+rm -f ./jobName
 #  jobName
 work_path=$(dirname $(readlink -f $0))
 Databases=$1
@@ -34,8 +33,6 @@ username=$3
 passwordfile=$4
 connect=$5
 
-
-while true; do
 # shellcheck disable=SC2068
 for tableName in ${tableNames[@]}; do
     typeset -l tmpTableName
@@ -46,17 +43,42 @@ for tableName in ${tableNames[@]}; do
     # shellcheck disable=SC2199
     # shellcheck disable=SC2076
     if [[ ${#jobArr[*]} -eq 0 ]] || [[ ! " ${jobArr[@]} " =~ " ${tmpTableName} " ]]; then
+
+        cmd="hive -e  \"select  column_name from information_schema.columns where table_schema ='${tmpDataBase}' and table_name='${tmpTableName}' order by ordinal_position asc\""
+        eval ${cmd} >tabledetial 2>/dev/null
+
+        columnNameStr=""
+
+        columnIndex=0
+        isColumnName=0
+        while read line; do
+
+            if [[ $isColumnName -gt 1 ]] && [[ ${#line} -gt 0 ]] && [[ ! $line =~ "-" ]]; then
+                if [[ $columnIndex == 0 ]]; then
+                    columnNameStr=$(echo $line | tr "|" "\n")
+                else
+                    columnNameStr=$columnNameStr,$(echo $line | tr "|" "\n")
+                fi
+                columnIndex=$columnIndex+1
+            fi
+            isColumnName=$isColumnName+1
+        done <tabledetial
+
+        rm -f ./tabledetial
+        # -e ' select $columnNameStr from $tableName WHERE \$CONDITIONS ' \
+        # -m 10 \
         #不存在任务，则创建任务
-        echo "start create sqoop job $Databases"."$tableName"
-        cmd=" sqoop-job --create $tmpDataBase"."$tmpTableName
+        echo "start create sqoop job $Databases"."$tableName" >>createsqoopjob.log
+        cmd=" sqoop-job --create $tmpDataBase"."$tmpTableName \
         -- import \
         --connect  $connect \
-        --table $tableName  \
+        --table $tableName \
+        --columns  \"$columnNameStr\"
         --password-file $passwordfile \
         --username $username  \
         --split-by Id \
         --merge-key Id  \
-        --fetch-size 100  \
+        --fetch-size 2000  \
         --check-column UpdateTime \
         --incremental lastmodified \
         --target-dir  '/datacentre/$tmpDataBase/$tmpTableName' \
@@ -64,23 +86,8 @@ for tableName in ${tableNames[@]}; do
         --lines-terminated-by '\n' \
         --last-value '1970-01-01 00:00:01.0'"
 
-        eval $cmd >$tableName"init.log" 2>&1
-        echo "end create sqoop job $tableName"
+        eval $cmd >>createsqoopjob.log 2>/dev/null
+        echo "end create sqoop job $tableName" >>createsqoopjob.log
     fi
-    # delete job
-    # cmd="sqoop-job --delete $tmpTableName"
-    # eval $cmd
-
-    # run job
-    echo "start run sqoop job $tableName"
-    cmd=" sqoop-job --exec $tmpDataBase"."$tmpTableName"
-    eval $cmd >$tableName"job.log" 2>&1
-    echo "end run sqoop job $tableName"
 
 done
-
-sleep 300000
-done
-
-echo "end"
-#  sqoop-job  --delete cacheitem

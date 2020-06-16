@@ -3,3 +3,4 @@
 /script/hive/*.log
 /script/hive/*.table
 /script/hive/*.java
+/script/hive/tabledetial
