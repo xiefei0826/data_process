@@ -11,10 +11,11 @@ while true; do
     while read line; do
         if [[ ${hasJob} -gt 0 ]]; then
             # run job
-            echo "start run sqoop job $tableName" >>runsqoopjob.log
-            cmd=" sqoop-job --exec $tmpDataBase"."$tmpTableName"
-            eval ${cmd} >>runsqoopjob.log 2>/dev/null
-            echo "end run sqoop job $tableName" >>runsqoopjob.log
+            echo pid:$$ date:$(date "+%Y-%m-%d %H:%M:%S") "start run sqoop job $line" >>runsqoopjob.log
+            cmd=" sqoop-job --exec $line"
+            echo pid:$$ date:$(date "+%Y-%m-%d %H:%M:%S") "CMD:-------------${cmd}" >>runsqoopjob.log
+            eval ${cmd} >>runsqoopjob.log 2>&1
+            echo pid:$$ date:$(date "+%Y-%m-%d %H:%M:%S") "end run sqoop job $line" >>runsqoopjob.log
             rm -f ./*.java
         fi
 
@@ -23,9 +24,10 @@ while true; do
         fi
 
     done <jobName
+    break
 
     if [[ ${hasJob} -eq 0 ]]; then
-        echo "no job"
+        echo pid:$$ date:"no job"
         break
     fi
 done
