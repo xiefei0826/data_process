@@ -61,7 +61,6 @@
         </dependency>
 
 
-
         <!-- spark steaming的依赖 -->
         <dependency>
             <groupId>org.apache.spark</groupId>
@@ -90,6 +89,7 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.20</version>
         </dependency>
+
 
     </dependencies>
 

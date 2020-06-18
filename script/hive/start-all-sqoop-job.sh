@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
-work_path=$(dirname $(readlink -f $0))
-
-sqoop-job --list >jobName 2>&1
-
-availableJob="Available jobs:"
-
 while true; do
+    sqoop-job --list >jobName 2>&1
+
+    availableJob="Available jobs:"
     hasJob=0
     while read line; do
         if [[ ${hasJob} -gt 0 ]]; then
@@ -24,10 +21,10 @@ while true; do
         fi
 
     done <jobName
-    break
-
+    rm -f ./jobName
     if [[ ${hasJob} -eq 0 ]]; then
         echo pid:$$ date:"no job"
         break
     fi
+    rm -f ./runsqoopjob.log
 done
