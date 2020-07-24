@@ -2,11 +2,9 @@ package sqoop
 
 import java.sql.{Connection, DriverManager}
 
-import scala.collection.{immutable, mutable}
+import scala.collection.immutable
 import scala.collection.immutable.List
-import scala.collection.mutable.Map
-import scala.collection.mutable.ListMap
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ListBuffer, Map}
 
 
 object GetSqoopScript {
