@@ -1,7 +1,7 @@
 /.idea/
-/script/hive/jobName
+/document/hive/jobName
 /script/hive/*.log
 /script/hive/*.table
 /script/hive/*.java
-/script/hive/tabledetial
+/document/hive/tabledetial
 /DataCentreReport/target/
