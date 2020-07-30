@@ -228,5 +228,5 @@ spec:
 
 
   concurrencyPolicy: Forbid
-  schedule: "*/2 * * * *"
+  schedule: "0 2 * * *"
 
