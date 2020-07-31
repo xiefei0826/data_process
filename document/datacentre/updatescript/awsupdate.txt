@@ -1,0 +1,132 @@
+
+alter table label rename  to tmpLabel;
+
+alter table label_copy1 rename  to label;
+
+create table  tmpMemoryLabel select  * from memorylabel;
+create table  tmpProductLabel select  * from productlabel;
+
+
+update memorylabel set LabelId=185 where LabelId in (10,12,50);
+update productlabel set LabelId=185 where LabelId in (10,12,50);
+
+
+update memorylabel set LabelId=171 where LabelId in (19);
+update productlabel set LabelId=171 where LabelId in (19);
+
+update memorylabel set LabelId=171 where LabelId in (19);
+update productlabel set LabelId=171 where LabelId in (19);
+
+update memorylabel set LabelId=153 where LabelId in (6);
+update productlabel set LabelId=153 where LabelId in (6);
+
+update memorylabel set LabelId=153 where LabelId in (6);
+update productlabel set LabelId=153 where LabelId in (6);
+
+update memorylabel set LabelId=154 where LabelId in (21);
+update productlabel set LabelId=154 where LabelId in (21);
+
+update memorylabel set LabelId=153 where LabelId in (6);
+update productlabel set LabelId=153 where LabelId in (6);
+
+update memorylabel set LabelId=145 where LabelId in (24);
+update productlabel set LabelId=145 where LabelId in (24);
+
+update memorylabel set LabelId=156 where LabelId in (2);
+update productlabel set LabelId=156 where LabelId in (2);
+
+update memorylabel set LabelId=157 where LabelId in (15);
+update productlabel set LabelId=157 where LabelId in (15);
+
+update memorylabel set LabelId=160 where LabelId in (48);
+update productlabel set LabelId=160 where LabelId in (48);
+
+update memorylabel set LabelId=179 where LabelId in (18);
+update productlabel set LabelId=179 where LabelId in (18);
+
+update memorylabel set LabelId=150 where LabelId in (13);
+update productlabel set LabelId=150 where LabelId in (13);
+
+update memorylabel set LabelId=147 where LabelId in (20);
+update productlabel set LabelId=147 where LabelId in (20);
+
+update memorylabel set LabelId=165 where LabelId in (34);
+update productlabel set LabelId=165 where LabelId in (34);
+
+update memorylabel set LabelId=148 where LabelId in (11);
+update productlabel set LabelId=148 where LabelId in (11);
+
+update memorylabel set LabelId=146 where LabelId in (42);
+update productlabel set LabelId=146 where LabelId in (42);
+
+update memorylabel set LabelId=181 where LabelId in (16);
+update productlabel set LabelId=181 where LabelId in (16);
+
+update memorylabel set LabelId=146 where LabelId in (29);
+update productlabel set LabelId=146 where LabelId in (29);
+
+update memorylabel set LabelId=151 where LabelId in (31);
+update productlabel set LabelId=151 where LabelId in (31);
+
+update memorylabel set LabelId=144 where LabelId in (32);
+update productlabel set LabelId=144 where LabelId in (32);
+
+update memorylabel set LabelId=161 where LabelId in (41);
+update productlabel set LabelId=161 where LabelId in (41);
+
+update memorylabel set LabelId=162 where LabelId in (46,26);
+update productlabel set LabelId=162 where LabelId in (46,26);
+
+update memorylabel set LabelId=165 where LabelId in (52);
+update productlabel set LabelId=165 where LabelId in (52);
+
+update memorylabel set LabelId=175 where LabelId in (27);
+update productlabel set LabelId=175 where LabelId in (27);
+
+update memorylabel set LabelId=178 where LabelId in (28,8);
+update productlabel set LabelId=178 where LabelId in (28,8);
+
+update memorylabel set LabelId=195 where LabelId in (1);
+update productlabel set LabelId=195 where LabelId in (1);
+
+update memorylabel set LabelId=201 where LabelId in (14);
+update productlabel set LabelId=201 where LabelId in (14);
+
+update memorylabel set LabelId=188 where LabelId in (39);
+update productlabel set LabelId=188 where LabelId in (39);
+
+update memorylabel set LabelId=192 where LabelId in (22);
+update productlabel set LabelId=192 where LabelId in (22);
+
+update memorylabel set LabelId=193 where LabelId in (47);
+update productlabel set LabelId=193 where LabelId in (47);
+
+update memorylabel set LabelId=147 where LabelId in (44);
+update productlabel set LabelId=147 where LabelId in (44);
+
+update memorylabel set LabelId=197 where LabelId in (51);
+update productlabel set LabelId=197 where LabelId in (51);
+
+update memorylabel set LabelId=199 where LabelId in (30);
+update productlabel set LabelId=199 where LabelId in (30);
+
+update memorylabel set LabelId=190 where LabelId in (35);
+update productlabel set LabelId=190 where LabelId in (35);
+
+update memorylabel set LabelId=165 where LabelId in (37);
+update productlabel set LabelId=165 where LabelId in (37);
+
+update memorylabel set LabelId=184 where LabelId in (7);
+update productlabel set LabelId=184 where LabelId in (7);
+
+update memorylabel set LabelId=179 where LabelId in (9);
+update productlabel set LabelId=179 where LabelId in (9);
+
+update memorylabel set LabelId=172 where LabelId in (25);
+update productlabel set LabelId=172 where LabelId in (25);
+
+update memorylabel set LabelId=148 where LabelId in (33);
+update productlabel set LabelId=148 where LabelId in (33);
+
+update memorylabel set LabelId=143 where LabelId in (13);
+update productlabel set LabelId=143 where LabelId in (13);

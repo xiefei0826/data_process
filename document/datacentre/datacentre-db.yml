@@ -7,7 +7,7 @@ spec:
     storage: 50Gi
   nfs:
     path: /nas/data/mysql
-    server: data3
+    server: ld1
   persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteOnce
@@ -48,7 +48,8 @@ spec:
             claimName: datacentre-mysql-data-pvc
       containers:
         - name: mysql
-          image: mysql:8.0.21
+          image: imagewarehouse.com/self/yxmysql:0.0.2
+          imagePullPolicy: Always
           ports:
             - containerPort: 3306
           volumeMounts:
@@ -110,7 +111,7 @@ spec:
     storage: 50Gi
   nfs:
     path: /nas/data/elasticsearch
-    server: data3
+    server: ld1
   persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteOnce
@@ -185,7 +186,7 @@ spec:
     storage: 50Gi
   nfs:
     path: /nas/data/backmysql
-    server: data3
+    server: ld1
   persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteMany
