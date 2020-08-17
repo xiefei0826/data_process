@@ -114,7 +114,7 @@ spec:
     server: ld1
   persistentVolumeReclaimPolicy: Retain
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 ---
 
 apiVersion: v1
@@ -127,7 +127,7 @@ spec:
     requests:
       storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
 ---
 
 apiVersion: apps/v1
