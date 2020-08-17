@@ -79,7 +79,7 @@ spec:
             - '--binlog.db=DataCentre'
             - '--binlog.host=tdb'
             - '--binlog.port=13306'
-            - '--binlog.logname=binlog.000001'
+            - '--binlog.logname=binlog.000001'     #show binary logs
             - '--binlog.post=4'
             - '--binlog.eshost=estest'
             - '--binlog.esport=19200'
