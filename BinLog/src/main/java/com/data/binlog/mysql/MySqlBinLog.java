@@ -54,6 +54,7 @@ public class MySqlBinLog {
         catch (Exception e){
             client.setBinlogPosition(mySqlConfig.getPost());
             client.setBinlogFilename(mySqlConfig.getLogName());
+            System.exit(1);
         }
 
 
@@ -73,6 +74,7 @@ public class MySqlBinLog {
                 BinaryLogClient.connect();
             } catch (IOException e) {
                 e.printStackTrace();
+                System.exit(1);
             }
         });
     }
