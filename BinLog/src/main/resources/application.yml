@@ -5,12 +5,12 @@ binlog:
   user: sync
   password: yixun2020Sync!
   db: DataCentre
-  host: tdb
+  host: 192.168.0.243
   port: 3306
   logname: binlog.000001
   post: 4
-  eshost: 192.168.1.131
-  esport: 19200
+  eshost: 192.168.0.243
+  esport: 9200
 #  create user 'sync'@'%' identified with mysql_native_password by 'yixun2020Sync!';
 #  grant all privileges on *.* to 'sync'@'%';
 #  flush privileges;

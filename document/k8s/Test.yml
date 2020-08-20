@@ -72,7 +72,7 @@ spec:
     spec:
       containers:
         - name: binlogdata
-          image: registry.yx.com/ctc/binlog:0.0.1
+          image: registry.yx.com/ctc/binlog:0.0.2
           args:
             - '--binlog.user=sync'
             - '--binlog.password=yixun2020Sync!'

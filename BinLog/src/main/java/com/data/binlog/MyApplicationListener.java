@@ -2,7 +2,7 @@ package com.data.binlog;
 
 import com.alibaba.fastjson.JSON;
 import com.data.binlog.es.EsConfig;
-import com.data.binlog.model.mysql.BinLogInfo;
+import com.data.binlog.model.es.BinLogInfo;
 import com.data.binlog.mysql.BinlogConfig;
 import com.github.shyiko.mysql.binlog.BinaryLogClient;
 
