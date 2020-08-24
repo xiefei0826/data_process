@@ -1,3 +1,27 @@
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: datacentre-mysql
+subsets:
+  - ports:
+      - port: 3306
+    addresses:
+      - ip: 172.18.192.210
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datacentre-mysql
+spec:
+  selector:
+    app: datacentre-mysql
+  ports:
+    - port: 8080
+  type: NodePort
+---
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -25,3 +49,61 @@ spec:
   resources:
     requests:
       storage: 500Gi
+
+
+---
+
+#apiVersion: batch/v1beta1
+#kind: CronJob
+#metadata:
+#  name: datacentre-backup-mysql
+#spec:
+#  jobTemplate:
+#    spec:
+#      template:
+#        metadata:
+#          name: datacentre-backup-mysql
+#          labels:
+#            app: datacentre-backup-mysql
+#        spec:
+#          volumes:
+#            - name: datacentre-backup-mysql
+#              persistentVolumeClaim:
+#                claimName: datacentre-backup-mysql-pvc
+#          containers:
+#            - name: datacentre-backup-mysql
+#              image: backup-mysql:0.0.1
+#              volumeMounts:
+#                - mountPath: /data
+#                  name: datacentre-backup-mysql
+#          restartPolicy: Never
+#
+#  schedule: "0,15,30,45 * * * *"
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test
+spec:
+  selector:
+    matchLabels:
+      app: test
+  serviceName: test
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      volumes:
+        - name: test
+          persistentVolumeClaim:
+            claimName: datacentre-backup-mysql-pvc
+      containers:
+        - name: test
+          image: backup-mysql:0.0.2
+          volumeMounts:
+            - mountPath: /data
+              name: test
+          command: ["mysqldump","-uroot","-pxiefei","-h datacentre-mysql","Auth",">Auth.sql"]
