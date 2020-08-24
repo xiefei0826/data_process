@@ -117,7 +117,7 @@ spec:
     storage: 50Gi
   nfs:
     path: /nas/data/elasticsearch
-    server: ld1
+    server: 192.168.1.131
   persistentVolumeReclaimPolicy: Retain
   accessModes:
     - ReadWriteMany
