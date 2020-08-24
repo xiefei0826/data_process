@@ -106,7 +106,7 @@ spec:
           volumeMounts:
             - mountPath: /data
               name: test
-          command: ["mysqldump","-uroot","-pxiefei","-h datacentre-mysql","Auth",">Auth.sql"]
+          command: ["mysqldump","-uroot","-pXffx0826+_","-h datacentre-mysql","Auth",">Auth.sql"]
 ---
 apiVersion: v1
 kind: PersistentVolume
