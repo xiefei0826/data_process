@@ -93,6 +93,7 @@ public class MemoryItemEventListener implements BinaryLogClient.EventListener {
             client.close();
         } catch (IOException e) {
             e.printStackTrace();
+            System.exit(1);
         }
     }
 
@@ -108,6 +109,7 @@ public class MemoryItemEventListener implements BinaryLogClient.EventListener {
             client.bulk(bulkRequest,RequestOptions.DEFAULT);
             client.close();
         } catch (IOException e) {
+            System.exit(1);
             e.printStackTrace();
         }
     }

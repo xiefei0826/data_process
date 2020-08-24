@@ -25,8 +25,8 @@ public class EsMemoryItemEntity {
         srcLanguage = (int) row[8];
         tgtLanguage = (int) row[9];
         seq = (int) row[10];
-        updateTime = (long) row[11];
-        createTime = (long) row[12];
+        createTime = (long) row[11];
+        updateTime = (long) row[12];
         Status= (int) row[13];
     }
 
