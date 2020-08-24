@@ -18,7 +18,7 @@ spec:
   selector:
     app: datacentre-mysql
   ports:
-    - port: 8080
+    - port: 3306
   type: NodePort
 ---
 
@@ -107,3 +107,77 @@ spec:
             - mountPath: /data
               name: test
           command: ["mysqldump","-uroot","-pxiefei","-h datacentre-mysql","Auth",">Auth.sql"]
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: datacentre-elasticsearch-data-pv
+spec:
+  capacity:
+    storage: 50Gi
+  nfs:
+    path: /nas/data/elasticsearch
+    server: ld1
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteMany
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: datacentre-elasticsearch-data-pvc
+spec:
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: datacentre-elasticsearch
+spec:
+  selector:
+    matchLabels:
+      app: datacentre-elasticsearch
+  serviceName: datacentre-elasticsearch
+  replicas: 1
+  template:
+    metadata:
+      name: datacentre-elasticsearch
+      labels:
+        app: datacentre-elasticsearch
+    spec:
+      volumes:
+        - name: elasticsearch-data
+          persistentVolumeClaim:
+            claimName: datacentre-elasticsearch-data-pvc
+      containers:
+        - name: elasticsearch
+          image: elasticsearch:7.8.0
+          ports:
+            - containerPort: 9200
+          volumeMounts:
+            - mountPath: /usr/share/elasticsearch/data
+              name: elasticsearch-data
+          env:
+            - name: discovery.type
+              value: single-node
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datacentre-elasticsearch
+spec:
+  selector:
+    app: datacentre-elasticsearch
+  ports:
+    - port: 9200
+  externalIPs:
+    - 192.168.1.131
