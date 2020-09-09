@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: datasync
+  labels:
+    app: datasync
+spec:
+  selector:
+    matchLabels:
+      app: datasync
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: datasync
+    spec:
+      containers:
+        - name: datasync
+          image: registry.yx.com/ctc/datasync:5287
+          args:
+            - '--binlog.user=sync'
+            - '--binlog.password=yixun2020Sync!'
+            - '--binlog.db=DataCentre'
+            - '--binlog.host=datacentre-mysql'
+            - '--binlog.port=3306'
+            - '--binlog.logname=binlog.000001'  #show binary logs
+            - '--binlog.post=4'
+            - '--binlog.eshost=elasticsearch'
+            - '--binlog.esport=9200'
