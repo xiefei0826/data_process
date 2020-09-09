@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: datacentre-mysql-data-pv
+spec:
+  storageClassName: ""
+  capacity:
+    storage: 50Gi
+  persistentVolumeReclaimPolicy: Retain
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/mysql"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: datacentre-mysql-data-pvc
+spec:
+  storageClassName: ""
+  volumeName: datacentre-mysql-data-pv
+  resources:
+    requests:
+      storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: datacentre-mysql-initdb-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/mysqlinitdb"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: datacentre-mysql-initdb-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: datacentre-mysql
+spec:
+  selector:
+    matchLabels:
+      app: datacentre-mysql
+  serviceName: datacentre-mysql
+  replicas: 1
+  template:
+    metadata:
+      name: datacentre-mysql
+      labels:
+        app: datacentre-mysql
+    spec:
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: datacentre-mysql-data-pvc
+        - name: mysql-initdb
+          persistentVolumeClaim:
+            claimName: datacentre-mysql-initdb-pvc
+      containers:
+        - name: mysql
+          image: mysql:8.0.21
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql-data
+            - mountPath: /docker-entrypoint-initdb.d
+              name: mysql-initdb
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: ofl202008
+          args:
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_general_ci"
+            - "--max_connections=1000"
+            - "--default-time_zone=+0:00"
+            - "--skip-host-cache"
+            - "--skip-name-resolve"
+            - "--binlog_format=Row"
+            - "--innodb_flush_log_at_trx_commit=1"
+            - "--sync_binlog=1"
+            - "--max_binlog_size=100M"
+            - "--log_output=TABLE"
+            - "--slow_query_log=0"
+            - "--log_slow_admin_statements=0"
+            - "--long_query_time=1"
+            - "--log_queries_not_using_indexes=0"
+            - "--general_log=0"
+            - "--innodb_buffer_pool_instances=16"
+            - "--innodb_buffer_pool_size=6G"
+            - "--innodb_log_files_in_group=8"
+            - "--max_connections=2000"
+            - "--max_connect_errors=1000"
+            - "--default-storage-engine=innodb"
+            - "--key_buffer_size=256M"
+            - "--sort_buffer_size=8M"
+            - "--join_buffer_size=8M"
+            - "--tmp_table_size=64M"
+        initContainers:
+          - name: data-filing
+            image: busybox:1.32.0-uclibc
+            command: ['sh','-c',""]
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datacentre-mysql
+spec:
+  selector:
+    app: datacentre-mysql
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  externalIPs:
+    - 192.168.0.117
