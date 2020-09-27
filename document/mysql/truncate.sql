@@ -17,6 +17,7 @@ delete
 from AppUser
 where Id not in (3588, 349, 1889, 1157);
 truncate table AssetsSwapGoods;
+INSERT INTO `BaseData`.`AssetsSwapGoods`(`AppChanel`, `Name`, `ToGoodsType`, `Quantity`, `FromGoodsType`, `Price`, `EffectiveDays`, `Description`, `Status`, `StartTime`, `EndTime`, `CreateTime`, `UpdateTime`) VALUES (1, '译小币 -> 翻译字数（1:100 兑换）', 16, 100, 256, 1.00, 18250, '译小币 -> 翻译字数（1:100 兑换）', 1, '2020-03-05 00:00:00.000000', '2050-12-31 23:59:59.000000', NOW(), NOW());
 truncate table AssetsSwapRecord;
 truncate table AutoRechargePlan;
 truncate table ChatGroupRecord;
