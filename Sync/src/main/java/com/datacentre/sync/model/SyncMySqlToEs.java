@@ -1,14 +1,22 @@
 package com.datacentre.sync.model;
 
-import java.sql.Timestamp;
-
 public class SyncMySqlToEs {
 
     private long Id;
     private String TableName;
-    private long Skip;
+    private long LastTime;
     private int Take;
     private byte Status;
+
+    public long getLastId() {
+        return LastId;
+    }
+
+    public void setLastId(long lastId) {
+        LastId = lastId;
+    }
+
+    private long LastId;
 
     public byte getIsInit() {
         return IsInit;
@@ -36,12 +44,12 @@ public class SyncMySqlToEs {
         TableName = tableName;
     }
 
-    public long getSkip() {
-        return Skip;
+    public long getLastTime() {
+        return LastTime;
     }
 
-    public void setSkip(long skip) {
-        Skip = skip;
+    public void setLastTime(long lastTime) {
+        LastTime = lastTime;
     }
 
     public int getTake() {

@@ -7,6 +7,8 @@ import com.datacentre.sync.config.MySqlConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -55,13 +57,13 @@ public class MySqlToEs {
                                         es.DeleteIndex(f.getTableName().toLowerCase());
                                     es.CreateIndex(mysql.ReadMySqlColumns(f.getTableName()), f.getTableName().toLowerCase());
                                     mysql.UpdateInitStatus(f.getId());
-                                    f.setSkip(0);
+                                    f.setLastTime(0);
                                     f.setIsInit((byte) 1);
                                 } else if (f.getIsInit() == 1) {
                                     if (!es.ExistIndex(f.getTableName().toLowerCase()))
                                         es.CreateIndex(mysql.ReadMySqlColumns(f.getTableName()), f.getTableName().toLowerCase());
                                 }
-                                var tableData = mysql.GetTableData(f.getTableName(), f.getSkip(), f.getTake());
+                                var tableData = mysql.GetTableData(f.getTableName(), f.getLastTime(), f.getTake(),f.getLastId());
                                 if (tableData.stream().count() == 0) {
                                     workThread.shutdown();
                                     return;
@@ -70,7 +72,10 @@ public class MySqlToEs {
 
                                 es.InsertOrUpdateData(f.getTableName().toLowerCase(), tableData);
 
-                                mysql.UpdateSyncInfo(f.getId(), tableData.stream().count());
+
+                                var lastTime = ((Timestamp) tableData.get((int) tableData.stream().count() - 1).get("updateTime")).getTime();
+                                var lastId = ((BigInteger) tableData.get((int) tableData.stream().count() - 1).get("id")).longValue();
+                                mysql.UpdateSyncInfo(f.getId(), lastTime,lastId);
                                 es.DeleteData(f.getTableName().toLowerCase());
                                 workThread.shutdown();
                             });
@@ -80,7 +85,6 @@ public class MySqlToEs {
                         threadPool.forEach(thread -> {
 
                             while (true) {
-                                System.out.println(thread.isShutdown());
                                 if (thread.isShutdown()) {
                                     break;
                                 }

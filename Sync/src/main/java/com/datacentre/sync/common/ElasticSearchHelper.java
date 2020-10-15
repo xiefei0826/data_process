@@ -98,7 +98,7 @@ public class ElasticSearchHelper {
         documents.forEach(f -> {
             IndexRequest indexRequest = new IndexRequest();
             indexRequest.index(index);
-            indexRequest.id(f.get("Id").toString());
+            indexRequest.id(f.get("id").toString());
             indexRequest.source(JSON.toJSONString(f), XContentType.JSON);
             bulkRequest.add(indexRequest);
         });
@@ -174,12 +174,7 @@ public class ElasticSearchHelper {
         return new RestHighLevelClient(RestClient.builder(new HttpHost(Host, Port, Mode)));
     }
 
-    private static String toLowerCaseFirstOne(String s) {
-        if (Character.isLowerCase(s.charAt(0)))
-            return s;
-        else
-            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
-    }
+
 
     private void CloseConnect(RestHighLevelClient restClient) {
         try {

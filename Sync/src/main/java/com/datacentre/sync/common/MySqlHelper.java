@@ -68,7 +68,7 @@ public class MySqlHelper {
 
             while (rs.next()) {
                 var columnInfo = new ColumnInfo();
-                columnInfo.setColumnName(rs.getString(1));
+                columnInfo.setColumnName(toLowerCaseFirstOne(rs.getString(1)));
                 columnInfo.setIndex(rs.getInt(2));
                 columnInfo.setColumnType(rs.getString(3));
                 list.add(columnInfo);
@@ -85,15 +85,17 @@ public class MySqlHelper {
         return list;
     }
 
-    private String GetTableQuerySql(String tableName, long skip, int take) {
+    private String GetTableQuerySql(String tableName, long lastTime, int take, long lastId) {
         var str = new StringBuilder("select ");
         var names = ReadMySqlColumns(tableName).stream().map(m -> m.getColumnName()).collect(Collectors.joining(","));
 
         str.append(names);
         str.append(" from  ");
         str.append(DbName + "." + tableName);
+        str.append(" where UpdateTime > " + lastTime);
+        str.append(" and Id >" + lastId);
         str.append(" Order By UpdateTime asc,  Id asc ");
-        str.append("  limit " + skip + "," + take);
+        str.append("  limit " + take);
 
         return str.toString();
     }
@@ -127,9 +129,9 @@ public class MySqlHelper {
         return fileName;
     }
 
-    public List<Dictionary<String, Object>> GetTableData(String tableName, long skip, int take) {
+    public List<Dictionary<String, Object>> GetTableData(String tableName, long lastTime, int take, long lastId) {
         var conn = CreateConnect();
-        var sql = GetTableQuerySql(tableName, skip, take);
+        var sql = GetTableQuerySql(tableName, lastTime, take, lastId);
         List<Dictionary<String, Object>> list = new ArrayList<>();
         try {
             var stmt = conn.createStatement();
@@ -140,7 +142,7 @@ public class MySqlHelper {
                 Dictionary<String, Object> dic = new Hashtable<>();
                 ReadMySqlColumns(tableName).forEach(f -> {
                     try {
-                        dic.put(f.getColumnName(), rs.getObject(f.getIndex()));
+                        dic.put(toLowerCaseFirstOne(f.getColumnName()), rs.getObject(f.getIndex()));
                     } catch (SQLException throwables) {
                         throwables.printStackTrace();
                         System.exit(1);
@@ -176,10 +178,11 @@ public class MySqlHelper {
                 try {
                     syncMySqlToEs.setId(rs.getLong("Id"));
                     syncMySqlToEs.setTableName(rs.getString("TableName"));
-                    syncMySqlToEs.setSkip(rs.getLong("Skip"));
+                    syncMySqlToEs.setLastTime(rs.getLong("LastTime"));
                     syncMySqlToEs.setTake(rs.getInt("Take"));
                     syncMySqlToEs.setStatus(rs.getByte("Status"));
                     syncMySqlToEs.setIsInit(rs.getByte("IsInit"));
+                    syncMySqlToEs.setLastId(rs.getLong("LastId"));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                     System.exit(1);
@@ -200,13 +203,13 @@ public class MySqlHelper {
     }
 
 
-    public void UpdateSyncInfo(long id, long count) {
-        var sql = "update  DataProcess.SyncMySqlToEs set Skip=Skip+" + count + " where Id=" + id;
+    public void UpdateSyncInfo(long id, long lastTime, long lastId) {
+        var sql = "update  DataProcess.SyncMySqlToEs set LastTime=" + lastTime + " , LastId=" + lastId + " where Id=" + id;
         sql(sql);
     }
 
     public void UpdateInitStatus(long id) {
-        var sql = "update  DataProcess.SyncMySqlToEs set IsInit=1,Skip=0 where Id=" + id;
+        var sql = "update  DataProcess.SyncMySqlToEs set IsInit=1,LastTime=0,LastId=0 where Id=" + id;
         sql(sql);
     }
 
@@ -223,4 +226,10 @@ public class MySqlHelper {
         CloseConnect(conn);
     }
 
+    private static String toLowerCaseFirstOne(String s) {
+        if (Character.isLowerCase(s.charAt(0)))
+            return s;
+        else
+            return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+    }
 }
