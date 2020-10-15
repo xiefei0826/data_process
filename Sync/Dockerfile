@@ -1,0 +1,10 @@
+FROM registry.yx.com/ctc/maven:3.6.3-slim as build
+WORKDIR /app
+COPY ./ .
+RUN mvn package -DskipTests=true
+
+FROM openjdk:14-slim as runtime
+WORKDIR /app
+COPY --from=build /app/target/*.jar ./app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
+
