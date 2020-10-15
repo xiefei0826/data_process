@@ -1,0 +1,15 @@
+server:
+  port: 9002
+
+sync:
+  mysql:
+    user: sync
+    password: yixun2020Sync!
+    db: DataCentre
+    host: 192.168.0.243
+    port: 3306
+    driver: com.mysql.cj.jdbc.Driver
+  es:
+    host: 192.168.0.243
+    port: 9200
+    mode: http
