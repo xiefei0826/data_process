@@ -93,7 +93,6 @@ public class MySqlHelper {
         str.append(" from  ");
         str.append(DbName + "." + tableName);
         str.append(" where UpdateTime > " + lastTime);
-        str.append(" and Id >" + lastId);
         str.append(" Order By UpdateTime asc,  Id asc ");
         str.append("  limit " + take);
 
