@@ -131,7 +131,7 @@ public class ElasticSearchHelper {
         var restClient = CreateConnect();
         DeleteByQueryRequest deleteRequest = new DeleteByQueryRequest(index);
 
-        deleteRequest.setQuery(new TermQueryBuilder("Status", "0"));
+        deleteRequest.setQuery(new TermQueryBuilder("status", "0"));
 
         try {
             restClient.deleteByQuery(deleteRequest, RequestOptions.DEFAULT);

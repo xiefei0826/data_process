@@ -6,10 +6,10 @@ sync:
     user: sync
     password: yixun2020Sync!
     db: DataCentre
-    host: 192.168.0.243
-    port: 3306
+    host: 192.168.0.117
+    port: 30542
     driver: com.mysql.cj.jdbc.Driver
   es:
-    host: 192.168.0.243
-    port: 9200
+    host: 192.168.0.117
+    port: 30573
     mode: http
