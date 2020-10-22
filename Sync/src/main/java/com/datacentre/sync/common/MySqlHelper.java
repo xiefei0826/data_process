@@ -85,7 +85,7 @@ public class MySqlHelper {
         return list;
     }
 
-    private String GetTableQuerySql(String tableName, long lastTime, int take, long lastId) {
+    private String GetTableQuerySql(String tableName, long lastTime, int take) {
         var str = new StringBuilder("select ");
         var names = ReadMySqlColumns(tableName).stream().map(m -> m.getColumnName()).collect(Collectors.joining(","));
 
@@ -93,7 +93,7 @@ public class MySqlHelper {
         str.append(" from  ");
         str.append(DbName + "." + tableName);
         str.append(" where UpdateTime > " + lastTime);
-        str.append(" Order By UpdateTime asc,  Id asc ");
+        str.append(" Order By UpdateTime asc");
         str.append("  limit " + take);
 
         return str.toString();
@@ -128,9 +128,9 @@ public class MySqlHelper {
         return fileName;
     }
 
-    public List<Dictionary<String, Object>> GetTableData(String tableName, long lastTime, int take, long lastId) {
+    public List<Dictionary<String, Object>> GetTableData(String tableName, long lastTime, int take) {
         var conn = CreateConnect();
-        var sql = GetTableQuerySql(tableName, lastTime, take, lastId);
+        var sql = GetTableQuerySql(tableName, lastTime, take);
         List<Dictionary<String, Object>> list = new ArrayList<>();
         try {
             var stmt = conn.createStatement();

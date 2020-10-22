@@ -63,19 +63,20 @@ public class MySqlToEs {
                                     if (!es.ExistIndex(f.getTableName().toLowerCase()))
                                         es.CreateIndex(mysql.ReadMySqlColumns(f.getTableName()), f.getTableName().toLowerCase());
                                 }
-                                var tableData = mysql.GetTableData(f.getTableName(), f.getLastTime(), f.getTake(),f.getLastId());
+                                var tableData = mysql.GetTableData(f.getTableName(), f.getLastTime(), f.getTake());
                                 if (tableData.stream().count() == 0) {
                                     workThread.shutdown();
                                     return;
                                 }
 
 
-                                es.InsertOrUpdateData(f.getTableName().toLowerCase(), tableData);
+                                 es.InsertOrUpdateData(f.getTableName().toLowerCase(), tableData);
 
 
-                                var lastTime = ((Timestamp) tableData.get((int) tableData.stream().count() - 1).get("updateTime")).getTime();
-                                var lastId = ((BigInteger) tableData.get((int) tableData.stream().count() - 1).get("id")).longValue();
-                                mysql.UpdateSyncInfo(f.getId(), lastTime,lastId);
+                                var lastId = tableData.stream().mapToLong(m -> ((BigInteger) m.get("id")).longValue()).max().getAsLong();
+
+                                var lastTime = tableData.stream().mapToLong(m -> ((Timestamp) m.get("updateTime")).getTime()).max().getAsLong();
+                                mysql.UpdateSyncInfo(f.getId(), lastTime, lastId);
                                 es.DeleteData(f.getTableName().toLowerCase());
                                 workThread.shutdown();
                             });
